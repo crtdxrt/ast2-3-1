@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Astatine Settings</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body {
+  background:#0e0e0e;
+  color:white;
+  overflow:hidden;
+}
+
+/* Snow Canvas */
+#snow {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* Main container */
+.container {
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  width:70%;
+  text-align:center;
+  animation:floaty 6s ease-in-out infinite;
+}
+
+/* Title */
+.title {
+  font-size:3.4em;
+  font-weight:700;
+  text-shadow:0 0 20px #ffffffaa,0 0 12px #9b59b6aa;
+  animation:zoomPulse 4s ease-in-out infinite;
+  margin-bottom:25px;
+}
+
+/* Buttons row */
+.buttons {
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  flex-wrap:wrap;
+  margin-bottom:35px;
+}
+.buttons a {
+  padding:10px 25px;
+  background:#fff;
+  color:#000;
+  font-weight:600;
+  border-radius:18px;
+  text-decoration:none;
+  font-size:1.15em;
+  transition:0.3s;
+  box-shadow:0 0 10px #ffffff55;
+}
+.buttons a:hover {
+  transform:translateY(-3px) scale(1.05);
+  box-shadow:0 0 20px #ffffffaa;
+}
+
+/* Settings buttons */
+.setting {
+  margin:15px 0;
+  padding:14px 22px;
+  background:white;
+  color:black;
+  border-radius:18px;
+  display:inline-block;
+  font-weight:600;
+  font-size:1.2em;
+  cursor:pointer;
+  box-shadow:0 0 12px #ffffff55;
+  transition:0.3s;
+}
+.setting:hover {
+  transform:scale(1.05);
+  box-shadow:0 0 18px #ffffffaa;
+}
+
+/* Dropdown */
+select {
+  padding:10px;
+  border-radius:10px;
+  margin-top:10px;
+  font-size:1.1em;
+}
+
+/* Animations */
+@keyframes zoomPulse {
+  0%,100%{transform:scale(1);}
+  50%{transform:scale(1.06);}
+}
+@keyframes floaty {
+  0%,100%{transform:translate(-50%,-50%) translateY(0);}
+  50%{transform:translate(-50%,-50%) translateY(-10px);}
+}
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="container">
+
+  <!-- Navigation Buttons -->
+  <div class="buttons">
+    <a href="index.html">Home</a>
+    <a href="creators.html">Creators</a>
+    <a href="settings.html">Settings</a>
+  </div>
+
+  <div class="title">Settings</div>
+
+  <!-- About Blank Toggle -->
+  <div class="setting" onclick="toggleBlank()">Toggle about:blank Mode</div>
+
+  <!-- Tab Cloak -->
+  <div style="margin-top:25px; font-size:1.25em; text-shadow:0 0 12px #ffffffaa;">Tab Cloak</div>
+
+  <select id="cloakSelect" onchange="applyCloak()">
+    <option value="none">None</option>
+    <option value="drive">Google Drive</option>
+    <option value="classroom">Google Classroom</option>
+    <option value="docs">Google Docs</option>
+  </select>
+
+</div>
+
+<script>
+// --------------------------
+// SNOW ANIMATION (same as index)
+// --------------------------
+const canvas=document.getElementById("snow");
+const ctx=canvas.getContext("2d");
+let W,H;
+
+function resize(){
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+}
+resize();
+window.onresize=resize;
+
+const flakes=[];
+for(let i=0;i<170;i++){
+  flakes.push({
+    x:Math.random()*W,
+    y:Math.random()*H,
+    r:Math.random()*3+1,
+    s:Math.random()*1+0.3
+  });
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle="rgba(255,255,255,0.5)";
+  ctx.beginPath();
+  flakes.forEach(f=>{
+    ctx.moveTo(f.x,f.y);
+    ctx.arc(f.x,f.y,f.r,0,Math.PI*2,true);
+  });
+  ctx.fill();
+  move();
+}
+
+function move(){
+  flakes.forEach(f=>{
+    f.y+=f.s;
+    if(f.y>H) f.y=-10;
+  });
+}
+
+setInterval(draw,30);
+
+
+// --------------------------
+// ABOUT:BLANK MODE
+// --------------------------
+let blankEnabled = false;
+
+function toggleBlank() {
+  blankEnabled = !blankEnabled;
+
+  if (blankEnabled) {
+    document.body.innerHTML = "";
+    document.body.style.background = "white";
+    document.addEventListener("click", ()=>location.reload());
+  }
+}
+
+
+// --------------------------
+// TAB CLOAK (PERSISTENT)
+// --------------------------
+function applyCloak() {
+  const val = document.getElementById("cloakSelect").value;
+
+  localStorage.setItem("cloakMode", val);
+
+  setCloak(val);
+}
+
+function setCloak(mode) {
+  let icon = "";
+  let title = "Astatine";
+
+  if (mode === "drive") {
+    icon = "gdrive.png";
+    title = "My Drive - Google Drive";
+  }
+  if (mode === "classroom") {
+    icon = "classroom.png";
+    title = "Classes";
+  }
+  if (mode === "docs") {
+    icon = "gdocs.png";
+    title = "Google Docs";
+  }
+
+  // Apply favicon
+  if (icon !== "") {
+    let link = document.querySelector("link[rel~='icon']");
+    if (!link) {
+      link = document.createElement("link");
+      link.rel = "icon";
+      document.head.appendChild(link);
+    }
+    link.href = icon;
+  }
+
+  // Apply title
+  document.title = title;
+
+  // Update dropdown
+  document.getElementById("cloakSelect").value = mode;
+}
+
+// Load saved cloak on page load
+window.onload = () => {
+  const saved = localStorage.getItem("cloakMode") || "none";
+  setCloak(saved);
+};
+</script>
+
+</body>
+</html>
+

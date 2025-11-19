@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Astatine 2 — Creators</title>
+<link rel="icon" type="image/png" href="A.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+body { background:#0e0e0e; color:white; overflow:auto; }
+
+/* Snow */
+#snow { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:-1; }
+
+/* Borders */
+.left-border, .right-border {
+  position:fixed; top:0; width:50px; height:100%;
+  background:rgba(255,255,255,0.05);
+  box-shadow:0 0 8px #ffffff88;
+  z-index:1;
+}
+.right-border { right:0; }
+.left-border { left:0; }
+
+/* Container */
+.container {
+  width:80%;
+  margin:60px auto;
+  text-align:center;
+}
+
+/* Title */
+.title {
+  font-size:3.5em; font-weight:700;
+  color:#fff; text-shadow:0 0 12px #fffaa;
+  margin-bottom:10px;
+}
+
+/* Subtitle */
+.subtitle {
+  font-size:1.5em; font-weight:600;
+  margin-bottom:25px;
+  text-shadow:0 0 8px #fffcc0;
+}
+
+/* Navigation buttons */
+.bottom-buttons {
+  display:flex; justify-content:center; gap:15px; margin-bottom:35px;
+}
+.bottom-buttons a {
+  padding:10px 25px; background:#fff; color:#000;
+  font-weight:600; border-radius:18px; text-decoration:none;
+  font-size:1.1em; box-shadow:0 0 10px #ffffff55;
+  transition:0.3s;
+}
+.bottom-buttons a:hover { transform:translateY(-3px) scale(1.05); box-shadow:0 0 20px #ffffffaa; }
+
+/* Creator Grid */
+.creator-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:30px;
+  justify-items:center;
+  margin-bottom:60px;
+}
+
+/* Creator Card */
+.creator-card {
+  width:180px;
+  background:#151515;
+  border-radius:18px;
+  padding:20px 15px;
+  border:1px solid #2e2e2e;
+  text-align:center;
+  transition:0.3s;
+  box-shadow:0 0 10px #00000055;
+  cursor:pointer;
+}
+
+.creator-card:hover {
+  transform:scale(1.05);
+  border-color:#4cc9ff;
+  box-shadow:0 0 15px #4cc9ff55;
+}
+
+/* PFP */
+.creator-card img {
+  width:90px; height:90px;
+  border-radius:100%;
+  object-fit:cover;
+  border:3px solid #4cc9ff55;
+  margin-bottom:10px;
+}
+
+/* Name */
+.creator-name {
+  font-size:1.2em; font-weight:600;
+  margin-bottom:5px;
+}
+
+/* Role */
+.creator-role {
+  font-size:0.9em;
+  color:#bbbbbb;
+  margin-bottom:10px;
+}
+
+/* Link text */
+.creator-link {
+  font-size:0.9em;
+  font-weight:600;
+  color:#4cc9ff;
+}
+
+/* Footer */
+footer {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(0,0,0,0.5);
+  text-align:center; padding:8px 0;
+  font-weight:600; color:#fff;
+  text-shadow:0 0 6px #fffcc0;
+  font-size:0.9em;
+}
+</style>
+</head>
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="left-border"></div>
+<div class="right-border"></div>
+
+<div class="container">
+
+  <div class="title">Creators</div>
+  <div class="subtitle">Meet the team behind Astatine 2!</div>
+
+  <!-- Navbar -->
+  <div class="bottom-buttons">
+    <a href="index.html">Home</a>
+    <a href="games.html">Games</a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSdQ7NJteMMv1LPDKMUy9KmJ2k607OQvxXFGvpQ-jm5UPMhIcQ/viewform?usp=header">Request Game</a>
+    <a href="settings.html">Settings</a>
+  </div>
+
+  <!-- Creator Cards -->
+  <div class="creator-grid">
+
+    <!-- Creator 1 -->
+    <div class="creator-card" onclick="window.location.href='#'">
+      <img src="pfp1.png">
+      <div class="creator-name">crtdxrt</div>
+      <div class="creator-role">Lead Developer</div>
+      <div class="creator-link">i like punch-out</div>
+    </div>
+
+    <!-- Creator 2 -->
+    <div class="creator-card" onclick="window.location.href='#'">
+      <img src="defnoto.png">
+      <div class="creator-name">DefnotO</div>
+      <div class="creator-role">Lead Alpha Tester</div>
+      <div class="creator-link">"I'm just a game tester?" - O</div>
+    </div>
+
+  </div>
+</div>
+
+<footer>Website by <strong>crtdxrt</strong> — 2025</footer>
+
+<script>
+/* Snow */
+const canvas=document.getElementById("snow"), ctx=canvas.getContext("2d");
+let W,H;
+function resize(){ W=canvas.width=window.innerWidth; H=canvas.height=window.innerHeight; }
+resize(); window.onresize=resize;
+
+const flakes=[];
+for(let i=0;i<170;i++){
+  flakes.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*3+1,s:Math.random()*1+0.3});
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle="rgba(255,255,255,0.5)";
+  ctx.beginPath();
+  flakes.forEach(f=>{ ctx.moveTo(f.x,f.y); ctx.arc(f.x,f.y,f.r,0,Math.PI*2,true); });
+  ctx.fill();
+  move();
+}
+function move(){
+  flakes.forEach(f=>{ f.y+=f.s; if(f.y>H) f.y=-10; });
+}
+setInterval(draw,30);
+</script>
+
+</body>
+</html>
+
